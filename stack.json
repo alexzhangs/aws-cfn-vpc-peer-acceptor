@@ -1,0 +1,90 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "AWS CloudFormation Template to create neccesary resources for the accepter of VPC peer connection.",
+  "Resources": {
+    "PeerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Principal": {
+                "AWS": "*"
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow"
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "root",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "ec2:AcceptVpcPeeringConnection",
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "PeerRoute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "VpcPeeringConnectionId": {
+          "Ref": "PeerRequesterId"
+        },
+        "DestinationCidrBlock": {
+          "Ref": "PeerRequesterCidrBlock"
+        },
+        "RouteTableId": {
+          "Ref": "PeerAccepterRouteTableId"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "PeerAccepterRouteTableId": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Route Table ID of the owner of the accepter VPC."
+    },
+    "PeerRequesterCidrBlock": {
+      "Type": "String",
+      "Default": "",
+      "Description": "CIDR Block of the requester VPC.",
+      "MinLength": "9",
+      "MaxLength": "18",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
+    "PeerRequesterId": {
+      "Type": "String",
+      "Default": "",
+      "Description": "VPC ID of the requester VPC."
+    },
+    "PeerRequesterAccountId": {
+      "Type": "String",
+      "Default": "",
+      "Description": "AWS Account ID of the owner of the requester VPC."
+    }
+  },
+  "Outputs": {
+    "PeerRoleArn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PeerRole",
+          "Arn"
+        ]
+      }
+    }
+  }
+}
