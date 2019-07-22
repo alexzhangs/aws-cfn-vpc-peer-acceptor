@@ -165,7 +165,7 @@
                 "    route_table = ec2.RouteTable('", {"Ref": "PeerAccepterRouteTableId"}, "')\n",
                 "    for record in event['Records']:\n",
                 "        payload = record['body']\n",
-                "        if isintance(payload, dict):\n",
+                "        if isinstance(payload, dict):\n",
                 "            pass\n",
                 "        elif isinstance(payload, (str, unicode)):\n",
                 "            payload = json.loads(payload)\n",
