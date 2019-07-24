@@ -40,3 +40,21 @@ SQS, route table and the logs.
 
 For the input parameters and the detail of the template, please check the template
 file.
+
+## Troubleshooting
+
+1. API: ec2:AcceptVpcPeeringConnection Roles may not be assumed by root accounts
+
+   You must create IAM user or role to deploy the
+   stack, you can not use AWS root user or its access key to do the
+   deployment. Because there is IAM assume role inside the template,
+   which assumes an action `ec2:AcceptVpcPeeringConnection` and AWS
+   restricts it's can't be assumed by root user. Otherwise an error would
+   be found in the events of stack while deployment.
+
+   ```
+   "ResourceStatus": "CREATE_FAILED",
+   "ResourceType": "AWS::EC2::VPCPeeringConnection",
+   "ResourceStatusReason": "API: ec2:AcceptVpcPeeringConnection Roles may not be assumed by root accounts"
+   ```
+
