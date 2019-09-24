@@ -58,3 +58,14 @@ file.
    "ResourceStatusReason": "API: ec2:AcceptVpcPeeringConnection Roles may not be assumed by root accounts"
    ```
 
+1. The VPC peer connection is active but connecting to the IP:port of the resource in the peering VPC is timeout.
+
+   Check following AWS resources on the console:
+
+   1. CloudWatch -> Logs, check the log of Lambda execution.
+   2. SQS -> Queue, check the message of queue.
+   3. VPC -> Route Tables -> Routes.
+   4. Lambda - Functions.
+   5. VPC -> Security Groups -> Inbound Rules.
+   6. EC2 -> Get System Log (/var/log/cloud-init-output.log).
+   7. IAM -> Role.
