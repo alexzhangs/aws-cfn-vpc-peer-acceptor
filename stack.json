@@ -36,6 +36,16 @@
         ]
       }
     },
+    "SqsPeerRouteDeadQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "QueueName": {
+          "Fn::Join": ["-", [{"Ref": "NS"}, "SqsPeerRouteDeadQueue"]]
+        },
+        "ReceiveMessageWaitTimeSeconds": "20",
+        "VisibilityTimeout": "30"
+      }
+    },
     "SqsPeerRouteQueue": {
       "Type": "AWS::SQS::Queue",
       "Properties": {
@@ -43,7 +53,11 @@
           "Fn::Join": ["-", [{"Ref": "NS"}, "SqsPeerRouteQueue"]]
         },
         "ReceiveMessageWaitTimeSeconds": "20",
-        "VisibilityTimeout": "30"
+        "VisibilityTimeout": "30",
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {"Fn::GetAtt": ["SqsPeerRouteDeadQueue", "Arn"]},
+          "maxReceiveCount": "3"
+        }
       }
     },
     "SqsPeerRouteQueuePolicy": {
