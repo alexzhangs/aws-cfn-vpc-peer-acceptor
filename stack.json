@@ -135,7 +135,8 @@
                 {
                   "Effect": "Allow",
                   "Action": [
-                    "ec2:CreateRoute"
+                    "ec2:CreateRoute",
+                    "ec2:DeleteRoute"
                   ],
                   "Resource": {
                     "Fn::Join": [
@@ -173,6 +174,7 @@
           "    session = boto3.Session(region_name='", {"Ref": "AWS::Region"}, "')\n",
           "    ec2 = session.resource('ec2')\n",
           "    route_table = ec2.RouteTable('", {"Ref": "RouteTableId"}, "')\n",
+          "    result = []\n",
           "    for record in event['Records']:\n",
           "        payload = record['body']\n",
           "        if isinstance(payload, dict):\n",
@@ -181,15 +183,23 @@
           "            payload = json.loads(payload)\n",
           "        else:\n",
           "            logger.error('Invalid message payload found')\n",
-          "            return\n",
-          "        route = route_table.create_route(\n",
-          "            DestinationCidrBlock=payload['peer_requester_cidr'],\n",
-          "            VpcPeeringConnectionId=payload['peer_connection_id']\n",
-          "        )\n",
+          "            return false\n",
+          "        request_type = payload['request_type']\n",
+          "        if request_type == 'Create':\n",
+          "            route = route_table.create_route(\n",
+          "                DestinationCidrBlock=payload['peer_requester_cidr'],\n",
+          "                VpcPeeringConnectionId=payload['peer_connection_id']\n",
+          "            )\n",
+          "            result.append(route)\n",
+          "        elif request_type == 'Delete':\n",
+          "            for route in route_table.routes:\n",
+          "                if route.destination_cidr_block == payload['peer_requester_cidr']:\n",
+          "                    route.delete()\n",
+          "                    result.append(route)\n",
           "        logger.info('======')\n",
-          "        logger.info(route)\n",
+          "        logger.info(result)\n",
           "        logger.info('======')\n",
-          "    return route is not None\n"
+          "    return result\n"
         ] ] } },
         "Handler": "index.edit_route_table",
         "Runtime": "python2.7",
