@@ -39,9 +39,7 @@
     "SqsPeerRouteDeadQueue": {
       "Type": "AWS::SQS::Queue",
       "Properties": {
-        "QueueName": {
-          "Fn::Join": ["-", [{"Ref": "NS"}, "SqsPeerRouteDeadQueue"]]
-        },
+        "QueueName": {"Fn::Sub": "${AWS::StackName}-SqsPeerRouteDeadQueue"},
         "ReceiveMessageWaitTimeSeconds": "20",
         "VisibilityTimeout": "30"
       }
@@ -49,9 +47,7 @@
     "SqsPeerRouteQueue": {
       "Type": "AWS::SQS::Queue",
       "Properties": {
-        "QueueName": {
-          "Fn::Join": ["-", [{"Ref": "NS"}, "SqsPeerRouteQueue"]]
-        },
+        "QueueName": {"Fn::Sub": "${AWS::StackName}-SqsPeerRouteQueue"},
         "ReceiveMessageWaitTimeSeconds": "20",
         "VisibilityTimeout": "30",
         "RedrivePolicy": {
@@ -232,16 +228,6 @@
     }
   },
   "Parameters": {
-    "NS": {
-      "Type": "String",
-      "Default": "Foo",
-      "Description": "Enter a Name Space for Stack. Default is 'Foo'."
-    },
-    "NSLowerCase": {
-      "Type": "String",
-      "Default": "foo",
-      "Description": "Lower case of value of NS. Default is 'foo'."
-    },
     "RouteTableId": {
       "Type": "String",
       "Default": "",
