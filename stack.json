@@ -154,10 +154,7 @@
             }
           }
         ]
-      },
-      "DependsOn": [
-        "SqsPeerRouteQueue"
-      ]
+      }
     },
     "LambdaPeerRouteQueueSubscriber": {
       "Type": "AWS::Lambda::Function",
@@ -215,10 +212,6 @@
           ]
         }
       },
-      "DependsOn": [
-        "LambdaExecutionRole",
-        "SqsPeerRouteQueue"
-      ]
     },
     "EventSourceMapping": {
       "Type": "AWS::Lambda::EventSourceMapping",
@@ -236,9 +229,6 @@
           ]
         }
       },
-      "DependsOn": [
-        "LambdaPeerRouteQueueSubscriber"
-      ]
     }
   },
   "Parameters": {
