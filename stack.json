@@ -8,12 +8,8 @@
         "AssumeRolePolicyDocument": {
           "Statement": [
             {
-              "Principal": {
-                "AWS": "*"
-              },
-              "Action": [
-                "sts:AssumeRole"
-              ],
+              "Principal": {"AWS": "*"},
+              "Action": ["sts:AssumeRole"],
               "Effect": "Allow"
             }
           ]
@@ -21,7 +17,7 @@
         "Path": "/",
         "Policies": [
           {
-            "PolicyName": "root",
+            "PolicyName": "default",
             "PolicyDocument": {
               "Version": "2012-10-17",
               "Statement": [
@@ -67,10 +63,8 @@
               "Principal": {
                 "AWS": "*"
               },
-              "Action": [
-                "sqs:SendMessage"
-              ],
-              "Resource": "*"
+              "Action": ["sqs:SendMessage"],
+              "Resource": {"Fn::GetAtt": ["SqsPeerRouteQueue", "Arn"]}
             }
           ]
         },
@@ -79,7 +73,7 @@
         ]
       }
     },
-    "LambdaExecutionRole": {
+    "LambdaPeerRouteQueueSubscriberExecutionRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -87,14 +81,8 @@
           "Statement": [
             {
               "Effect": "Allow",
-              "Principal": {
-                "Service": [
-                  "lambda.amazonaws.com"
-                ]
-              },
-              "Action": [
-                "sts:AssumeRole"
-              ]
+              "Principal": {"Service": ["lambda.amazonaws.com"]},
+              "Action": ["sts:AssumeRole"]
             }
           ]
         },
@@ -102,7 +90,7 @@
         "Path": "/",
         "Policies": [
           {
-            "PolicyName": "root",
+            "PolicyName": "default",
             "PolicyDocument": {
               "Version": "2012-10-17",
               "Statement": [
@@ -112,17 +100,7 @@
                     "ec2:CreateRoute",
                     "ec2:DeleteRoute"
                   ],
-                  "Resource": {
-                    "Fn::Join": [
-                      "",
-                      [
-                        "arn:aws:ec2:*:*:route-table/",
-                        {
-                          "Ref": "RouteTableId"
-                        }
-                      ]
-                    ]
-                  }
+                  "Resource": {"Fn::Join": ["", ["arn:aws:ec2:*:*:route-table/", {"Ref": "RouteTableId"}]]}
                 }
               ]
             }
@@ -197,30 +175,15 @@
         "Handler": "index.lambda_handler",
         "Runtime": "python2.7",
         "Timeout": "15",
-        "Role": {
-          "Fn::GetAtt": [
-            "LambdaExecutionRole",
-            "Arn"
-          ]
-        }
-      },
+        "Role": {"Fn::GetAtt": ["LambdaPeerRouteQueueSubscriberExecutionRole", "Arn"]}
+      }
     },
     "EventSourceMapping": {
       "Type": "AWS::Lambda::EventSourceMapping",
       "Properties": {
-        "EventSourceArn": {
-          "Fn::GetAtt": [
-            "SqsPeerRouteQueue",
-            "Arn"
-          ]
-        },
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "LambdaPeerRouteQueueSubscriber",
-            "Arn"
-          ]
-        }
-      },
+        "EventSourceArn": {"Fn::GetAtt": ["SqsPeerRouteQueue", "Arn"]},
+        "FunctionName": {"Fn::GetAtt": ["LambdaPeerRouteQueueSubscriber", "Arn"]}
+      }
     }
   },
   "Parameters": {
@@ -232,17 +195,10 @@
   },
   "Outputs": {
     "IamPeerRoleArn": {
-      "Value": {
-        "Fn::GetAtt": [
-          "IamPeerRole",
-          "Arn"
-        ]
-      }
+      "Value": {"Fn::GetAtt": ["IamPeerRole", "Arn"]}
     },
     "SqsPeerRouteQueueUrl": {
-      "Value": {
-        "Ref": "SqsPeerRouteQueue"
-      }
+      "Value": {"Ref": "SqsPeerRouteQueue"}
     }
   }
 }
