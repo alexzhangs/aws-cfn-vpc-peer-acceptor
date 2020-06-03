@@ -115,8 +115,6 @@
         "Code": { "ZipFile": { "Fn::Join": [ "\n", [
           "#!/usr/bin/env python",
           "",
-          "from __future__ import print_function",
-          "",
           "import os",
           "import json",
           "import boto3",
@@ -134,7 +132,7 @@
           "        payload = record['body']",
           "        if isinstance(payload, dict):",
           "            pass",
-          "        elif isinstance(payload, (str, unicode)):",
+          "        elif isinstance(payload, str):",
           "            payload = json.loads(payload)",
           "        else:",
           "            print('Invalid message payload found')",
@@ -173,7 +171,7 @@
           }
         },
         "Handler": "index.lambda_handler",
-        "Runtime": "python2.7",
+        "Runtime": "python3.7",
         "Timeout": "15",
         "Role": {"Fn::GetAtt": ["LambdaPeerRouteQueueSubscriberExecutionRole", "Arn"]}
       }
