@@ -1,6 +1,6 @@
-# aws-cfn-vpc-peer-accepter
+# aws-cfn-vpc-peer-acceptor
 
-AWS CloudFormation Stack for VPC Peering Accepter.
+AWS CloudFormation Stack for VPC Peering Acceptor.
 
 ## Usage
 
@@ -15,16 +15,16 @@ This repo can be used along with below repoes:
 * [aws-cfn-vpc-peer-requester](https://github.com/alexzhangs/aws-cfn-vpc-peer-requester)
 * [aws-cfn-vpc](https://github.com/alexzhangs/aws-cfn-vpc)
 
-To create cross account VPC peer connections, one accepter peers with
+To create cross account VPC peer connections, one acceptor peers with
 multi requesters. These repoes may make the process easier.
 
 However you will need to make a new template to put all these together,
-put `aws-cfn-vpc`, `aws-cfn-vpc-peer-accepter` and
+put `aws-cfn-vpc`, `aws-cfn-vpc-peer-acceptor` and
 `aws-cfn-vpc-peer-requester` as the nested stack of your new stack.
 
 About how to do this, you may refer to a real world example
 [aws-cfn-vpn](https://github.com/alexzhangs/aws-cfn-vpn), which put
-all these together, and is able to create one(accepter) to many(requester) cross
+all these together, and is able to create one(acceptor) to many(requester) cross
 account VPC peer connections.
 
 This template will create an AWS CloudFormation stack, including
